@@ -55,3 +55,5 @@ public class QuickUnionUF {
 		id[i] = j;
 	}
 }
+
+//第三种算法
