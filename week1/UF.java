@@ -25,8 +25,26 @@ public class UF {
     return find(p) == find(q);
   }
   
-  public int find(int p)
-  public void union(int p, int q) // See page 222 (quick-find),page 224 (quick-union) andpage 228 (weighted).
+  /*
+  以下是find和union方法的第一种算法，即Quick-Find，也就是给定site"p"，find立即就返回它所在的component，即int[p]的值
+  union方法是通过比较p和q两个site的值，如果不相等，则把所有site中每个值等于p的值的site，赋值为q的值，实质上就是把与p同一类的site都变为与q同一类
+  */
+  public int find(int p) {
+    return id[p];
+  }
+  
+  public void union(int p, int q) { // Put p and q into the same component.
+    int pID = find(p);
+    int qID = find(q);
+    // Nothing to do if p and q are already in the same component.
+    if (pID == qID)
+      return; 
+    // Rename p’s component to q’s name.
+    for (int i = 0; i < id.length; i++) 
+      if (id[i] == pID)
+        id[i] = qID;
+    count--;
+  }
     
   public static void main(String[] args) { // Solve dynamic connectivity problem on StdIn.
     int N = StdIn.readInt(); // Read number of sites.
