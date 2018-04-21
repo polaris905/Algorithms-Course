@@ -2,6 +2,8 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+// 现在的问题是每次第一行都自动为open且full的状态，但是用main测试没发现问题
+
 public class Percolation {
     private int sizes;
     private boolean[] opened; 
