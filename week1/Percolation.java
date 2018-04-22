@@ -6,6 +6,7 @@ public class Percolation {
     private boolean[] isOpen;
     private int openSites;
     private int topSite;
+    private int bottomSite;
     
     // create n-by-n grid, with all sites blocked
     public Percolation(int n) {
@@ -13,16 +14,20 @@ public class Percolation {
            throw new IllegalArgumentException("Illegal constructor Argument");
        else {
            sizes = n;
-           isOpen = new boolean[n * n + 1];
+           isOpen = new boolean[n * n + 2];
            openSites = 0;
            topSite = 0;
+           bottomSite = n * n + 1;
            for (int i = 0; i <= n * n; i++) {
                isOpen[i] = false;
            }
-           uf = new WeightedQuickUnionUF(n * n + 1);
+           uf = new WeightedQuickUnionUF(n * n + 2);
            for (int i = 1; i <= n; i++) {
                uf.union(topSite, i);
            } 
+           for (int i = n * (n - 1) + 1; i <= n * n; i++) {
+               uf.union(bottomSite, i);
+           }
        }
     }
     
@@ -80,7 +85,7 @@ public class Percolation {
     public boolean isFull(int row, int col) { // is site (row, col) full?
         if (isValid(row, col)) {
             if (isOpen(row, col))
-                return uf.connected(xyTo1D(row, col), 0);
+                return uf.connected(xyTo1D(row, col), topSite);
             else return false;
         }
         else throw new IllegalArgumentException("Illegal Argument"); 
@@ -91,11 +96,7 @@ public class Percolation {
     }
     
     public boolean percolates() { // does the system percolate?
-        for (int i = 1; i <= sizes; i++) {
-            if (isFull(sizes, i)) 
-                return true;
-        }
-        return false;
+        return uf.connected(topSite, bottomSite);
     }
   
     public static void main(String[] args)  { // test client (optional)
