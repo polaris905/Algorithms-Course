@@ -93,9 +93,13 @@ public class Deque<Item> implements Iterable<Item> {
             throw new java.lang.UnsupportedOperationException();
         }
         public Item next() {
-            Item item = current.item;
-            current = current.next;
-            return item;
+            if (current == null)
+                 throw new java.util.NoSuchElementException();
+            else {
+                Item item = current.item;
+                current = current.next;
+                return item;
+            }
         }
     }
     
