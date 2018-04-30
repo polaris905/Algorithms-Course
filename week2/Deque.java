@@ -1,8 +1,8 @@
 import java.util.Iterator;
 
 public class Deque<Item> implements Iterable<Item> {
-    Node first;
-    Node last;
+    private Node first;
+    private Node last;
     private int N;
     
     private class Node {
