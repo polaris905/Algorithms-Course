@@ -1,4 +1,4 @@
-package week2;
+
 import edu.princeton.cs.algs4.StdRandom;
 import java.util.Iterator;
 
@@ -8,10 +8,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] result;
     private int M = 0;
     
-    public RandomizedQueue() {}
+    public RandomizedQueue() {
+    }
     
     private void enlarge(int max) {
-        Item[] temp = (Item[])new Object[max];
+        Item[] temp = (Item[]) new Object[max];
         for (int i = 0; i < N - M; i++) {
             temp[i] = a[i];
         }
@@ -19,7 +20,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
     
     private void decrease(int max) {
-        Item[] temp = (Item[])new Object[max];
+        Item[] temp = (Item[]) new Object[max];
         int j = 0;
         for (int i = 0; i < N - M; i++) {
             while ((j < a.length) && (a[j] == null)) {
@@ -92,7 +93,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new java.lang.UnsupportedOperationException();
         }
         public Item next() {
-            return result[--i];
+            if (i == 0) throw new java.util.NoSuchElementException();
+            else return result[--i];
         }
     }
     public static void main(String[] args) {
