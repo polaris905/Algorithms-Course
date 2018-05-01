@@ -7,17 +7,22 @@ public class Deque<Item> implements Iterable<Item> {
     
     private class Node {
         Item item;
+        // 本题要求双向连接，所以要声明一个Node变量指向前一个Node
         Node previous;
         Node next;
     }
+    
     public Deque() {
     }
+    
     public boolean isEmpty() {
         return N == 0;
     }
+    
     public int size() {
         return N;
     }
+    
     public void addFirst(Item item) {
         if (item == null) throw new java.lang.IllegalArgumentException();
         else {
@@ -25,12 +30,12 @@ public class Deque<Item> implements Iterable<Item> {
             first = new Node();
             first.item = item;
             if (isEmpty()) last = first;
+            // 建立双性连接，就要同时指定前一个和后一个Node
             else 
             {
                 oldfirst.previous = first;
                 first.next = oldfirst;
             }
-            oldfirst = null;
             N++;
         }
     }
@@ -46,7 +51,6 @@ public class Deque<Item> implements Iterable<Item> {
                 oldlast.next = last;
                 last.previous = oldlast;
             }
-            oldlast = null;
             N++;
         }
     }
@@ -61,6 +65,8 @@ public class Deque<Item> implements Iterable<Item> {
             if (isEmpty()) {
                 last = null;
             }
+            // 此代码的作用在于断掉first.previous指向对象的所有引用
+            // 倘若去掉此代码，假如后续执行remove系列方法特别是removeLast时，会出现删掉的对象实际上还存在于链表中的问题
             else first.previous = null;
             return item;
         }
@@ -75,10 +81,13 @@ public class Deque<Item> implements Iterable<Item> {
             if (isEmpty()) {
                 first = null;
             }
+            // 此代码的作用在于断掉first.previous指向对象的所有引用
+            // 倘若去掉此代码，假如后续执行remove系列方法特别是removeLast时，会出现删掉的对象实际上还存在于链表中的问题
             else last.next = null;
             return item;
         }
     }
+    
     public Iterator<Item> iterator() {
         return new DequeIterator();
     }
@@ -107,11 +116,12 @@ public class Deque<Item> implements Iterable<Item> {
         Deque<String> dq = new Deque<String>();
         dq.addLast("bbb");
         for (String s : dq)
-            System.out.println(s + " is left");
+            System.out.println("The first output: " + s + " is left");
         dq.addFirst("aaa");
         dq.addLast("ccc");
         dq.addLast("ddd");
+        dq.removeLast();
         for (String s : dq)
-            System.out.println(s + " is left");
+            System.out.println("The second output: " + s + " is left");
     }
 }
