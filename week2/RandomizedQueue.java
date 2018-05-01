@@ -37,21 +37,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return M;
     }
     public void enqueue(Item item) {
-        if (item == null) throw new java.lang.IllegalArgumentException();
-        else {
-            if (N == a.length) refresh();
-            a[N++] = item;
-            M++;
-        }
+        if (N == a.length) refresh();
+        a[N++] = item;
+        M++;
     }
     public Item dequeue() {
         if (isEmpty()) throw new java.util.NoSuchElementException();
         else {
-            int randomIndex = StdRandom.uniform(M);
+            int randomIndex = StdRandom.uniform(N);
+            while (a[randomIndex] == null)
+                randomIndex = StdRandom.uniform(N);
             Item item = a[randomIndex];
             a[randomIndex] = null;
             M--;
-            refresh();
+            if (M > 0 && M == a.length / 4) refresh();
             return item;
         }
     }
@@ -59,22 +58,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item sample() {
         if (isEmpty()) throw new java.util.NoSuchElementException();
         else {
-            int randomIndex = StdRandom.uniform(M);
-            return a[randomIndex];
+            int randomIndex = StdRandom.uniform(a.length);
+            if (a[randomIndex] != null)
+                return a[randomIndex];
+            else return sample();
         }
     }
 
     public Iterator<Item> iterator() {
+        if (M != a.length)
+            resize(M);
+        StdRandom.shuffle(a);
         return new RQIterator();
     }
     
-    private class RQIterator implements Iterator<Item> {   
-        RQIterator() {
-            if (M != a.length)
-                resize(M);
-            StdRandom.shuffle(a);
-        }
-        
+    private class RQIterator implements Iterator<Item> {
         private int i = M;
         
         public boolean hasNext() {
