@@ -1,90 +1,81 @@
-
 import edu.princeton.cs.algs4.StdRandom;
 import java.util.Iterator;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] a = (Item[]) new Object[1];
     private int N = 0;
-    private Item[] result;
     private int M = 0;
     
     public RandomizedQueue() {
     }
     
-    private void enlarge(int max) {
-        Item[] temp = (Item[]) new Object[max];
-        for (int i = 0; i < N - M; i++) {
-            temp[i] = a[i];
+    private void refresh() {
+        if (M < N) {
+            resize(N);
         }
-        a = temp;
+        else resize(2 * N);
     }
     
-    private void decrease(int max) {
+    private void resize(int max) {
         Item[] temp = (Item[]) new Object[max];
         int j = 0;
-        for (int i = 0; i < N - M; i++) {
-            while ((j < a.length) && (a[j] == null)) {
-                j++;
+        for (int i = 0; i < M; i++) {
+            while (j < a.length) {
+                if (a[j] == null) j++;
+                else break;
             }
-            temp[i] = a[j];
+            temp[i] = a[j++];
         }
         a = temp;
+        N = M;
     }
+  
     public boolean isEmpty() {
-        return N - M == 0;
+        return M == 0;
     }
     public int size() {
-        return N - M;
+        return M;
     }
     public void enqueue(Item item) {
-        if (N == a.length) enlarge(2 * a.length);
-        N++;
-        for (int i = 0; i < N; i++) {
-            if (a[i] == null) {
-                a[i] = item;
-                break;
-            }
+        if (item == null) throw new java.lang.IllegalArgumentException();
+        else {
+            if (N == a.length) refresh();
+            a[N++] = item;
+            M++;
         }
     }
     public Item dequeue() {
-        if ((N - M) == 0) throw new java.util.NoSuchElementException();
+        if (isEmpty()) throw new java.util.NoSuchElementException();
         else {
-            int randomIndex = StdRandom.uniform(N);
-            if (a[randomIndex] != null) {
-                Item item = a[randomIndex];
-                a[randomIndex] = null;
-                M++;
-                if ((N - M) > 0 && (N - M) == a.length / 4) decrease(a.length / 2);
-                return item;
-            }
-            else return dequeue();
+            int randomIndex = StdRandom.uniform(M);
+            Item item = a[randomIndex];
+            a[randomIndex] = null;
+            M--;
+            refresh();
+            return item;
         }
     }
 
     public Item sample() {
-        if ((N - M) == 0) throw new java.util.NoSuchElementException();
+        if (isEmpty()) throw new java.util.NoSuchElementException();
         else {
-            int randomIndex = StdRandom.uniform(N);
-            if (a[randomIndex] != null)
-                return a[randomIndex];
-            else return sample();
+            int randomIndex = StdRandom.uniform(M);
+            return a[randomIndex];
         }
     }
 
     public Iterator<Item> iterator() {
-        int i = N - M;
-        result = (Item[]) new Object[i];
-        for (Item e : a) {
-            if (e != null) {
-                result[--i] = e;
-            }
-        }
-        StdRandom.shuffle(result);
         return new RQIterator();
     }
     
-    private class RQIterator implements Iterator<Item> {
-        private int i = N - M;
+    private class RQIterator implements Iterator<Item> {   
+        RQIterator() {
+            if (M != a.length)
+                resize(M);
+            StdRandom.shuffle(a);
+        }
+        
+        private int i = M;
         
         public boolean hasNext() {
             return i > 0;
@@ -94,16 +85,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
         public Item next() {
             if (i == 0) throw new java.util.NoSuchElementException();
-            else return result[--i];
+            else return a[--i];
         }
     }
     public static void main(String[] args) {
-        RandomizedQueue<String> rq = new RandomizedQueue<String>();
-        rq.enqueue("aaa");
-        rq.enqueue("bbb");
-        System.out.println("delete " + rq.dequeue());
-        System.out.println("delete " + rq.sample());
-        for (String s : rq)
-           System.out.println("left " +s);
+        // Empty
     }
 }
