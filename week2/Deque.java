@@ -11,18 +11,14 @@ public class Deque<Item> implements Iterable<Item> {
         Node previous;
         Node next;
     }
-    
     public Deque() {
     }
-    
     public boolean isEmpty() {
         return N == 0;
     }
-    
     public int size() {
         return N;
     }
-    
     public void addFirst(Item item) {
         if (item == null) throw new java.lang.IllegalArgumentException();
         else {
@@ -30,12 +26,13 @@ public class Deque<Item> implements Iterable<Item> {
             first = new Node();
             first.item = item;
             if (isEmpty()) last = first;
-            // 建立双性连接，就要同时指定前一个和后一个Node
             else 
             {
                 oldfirst.previous = first;
                 first.next = oldfirst;
             }
+            // 帮助垃圾回收站回收没用的对象
+            oldfirst = null;
             N++;
         }
     }
@@ -51,6 +48,8 @@ public class Deque<Item> implements Iterable<Item> {
                 oldlast.next = last;
                 last.previous = oldlast;
             }
+            // 帮助垃圾回收站回收没用的对象
+            oldlast = null;
             N++;
         }
     }
@@ -87,7 +86,6 @@ public class Deque<Item> implements Iterable<Item> {
             return item;
         }
     }
-    
     public Iterator<Item> iterator() {
         return new DequeIterator();
     }
